@@ -56,65 +56,43 @@ int rng(int lim)
 }
 
 /* ========== Solution ========= */
-void solution()
-{
-    ll n;
+void solution(){
+    ll n; 
     cin>>n;
-    vector<int> arr(n);
-    for(int i=0; i<n; ++i) cin>>arr[i];
 
-    // vector<int> ans;
-    // ans.push_back(arr[0]);
-
-    // for(int i=1; i<n; ++i){
-    //     if(arr[i] > ans.back()){
-    //         ans.push_back(arr[i]);
-    //     }
-    //     else{
-    //         int lb = lower_bound(ans.begin(), ans.end(), arr[i]) - ans.begin();
-    //         ans[lb] = arr[i];
-    //     }
-    // }
-
-    // cout<<ans.size();
-
-    vector<int> dp(n, 1);
-    vector<int> prev(n, -1);
-    int ans = 1;
-    int LIS_end = 0;
-    for(int i=0; i<n; ++i){
-        prev[i] = i;
-        for(int j=0; j<i; ++j){
-            if(arr[i] <= arr[j]) continue;
-            if(dp[i] < dp[j]+1){
-                dp[i] = dp[j]+1;
-                prev[i] = j;
-                if(ans < dp[i]){
-                    ans = dp[i];
-                    LIS_end = i;
-                }
-            }
-        }
+    /**
+     * @remark 
+     * Total Non_attacking position = Total Positions - Attacking Positions
+     * 
+     * Total Positions = (k^2)C2 --> Select 2 boxes out of k^2 boxes
+     *                 = k*k*((k*k) - 1)/2
+     * 
+     * Attacking Positions:
+     * An atacking situation can be contined in a 3*2 or 2*3 grid
+     *
+     *  _________________     _________________     ___________     ___________
+     * |  K  |     |     |   |     |     |  K  |   |  K  |     |   |     |  K  |
+     * |_____|_____|_____|   |_____|_____|_____|   |_____|_____|   |_____|_____|
+     * |     |     |  K  |   |  K  |     |     |   |     |     |   |     |     |
+     * |_____|_____|_____|   |_____|_____|_____|   |_____|_____|   |_____|_____|
+     *                                             |     |  K  |   |  K  |     |
+     *                                             |_____|_____|   |_____|_____|
+     *                                                                          
+     * Hence Total Attacking positions = attacks in of 3*2 grids + attacks of 2*3 grids
+     * Since it is symmetric ->        = 2*(attacks in 2*3 grid)
+     *                                 = 2*2*(number of 2*3 grids)
+     *                                 = 4*(k-2)*(k-1); 
+     */
+    for(ll i=1; i<=n; ++i){
+        ll tmp = (i*i*((i*i) - 1)/2) - 4*(i-1)*(i-2);
+        cout<<tmp<<"\n";
     }
-    cout<<ans<<endl;
-    // cout<<LIS_end<<endl;
-    // cout<<dp;
-    
-    // // Print LIS
-    // vector<int> LIS;
-    // while(1){
-    //     LIS.pb(arr[LIS_end]);
-    //     if(LIS_end == prev[LIS_end]) break;
-    //     LIS_end = prev[LIS_end];
-    // }
-    // reverse(all(LIS));
-    // cout<<LIS;
 }
 
 /* ============ Main ============ */
 
-int main()
-{
+int main(){
+
     #ifndef ONLINE_JUDGE
        freopen("input.txt","r",stdin);
        freopen("output.txt","w",stdout);

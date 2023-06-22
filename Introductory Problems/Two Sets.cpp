@@ -56,65 +56,73 @@ int rng(int lim)
 }
 
 /* ========== Solution ========= */
-void solution()
-{
-    ll n;
+void solution(){
+    ll n; 
     cin>>n;
-    vector<int> arr(n);
-    for(int i=0; i<n; ++i) cin>>arr[i];
 
-    // vector<int> ans;
-    // ans.push_back(arr[0]);
+    /**
+     * @remark 
+     * Initial case n=3: Easily we can split A={1,2} & B={3}
+     * Inductive step n→n+4:
+     * Suppose we can split the set {1,…,n} into two sets 
+     * A,B with the same sum. Then, we can split {1,…,n+4} 
+     * into the sets A∪{n+1,n+4} and B∪{n+2,n+3}. The sets 
+     * will remain with the same sum since:
+     * (n+1)+(n+4)=(n+2)+(n+3)
+     */
+    ll sum = n*(n+1)/2;
+    if(sum&1){
+        cout<<"NO";
+        br;
+        return;
+    }
+    else{
+        cout<<"YES";
+        br;
+        vector<int> st1, st2;
+        if(n&1){
+            st1.push_back(1);
+            st1.push_back(2);
+            st2.push_back(3);
 
-    // for(int i=1; i<n; ++i){
-    //     if(arr[i] > ans.back()){
-    //         ans.push_back(arr[i]);
-    //     }
-    //     else{
-    //         int lb = lower_bound(ans.begin(), ans.end(), arr[i]) - ans.begin();
-    //         ans[lb] = arr[i];
-    //     }
-    // }
-
-    // cout<<ans.size();
-
-    vector<int> dp(n, 1);
-    vector<int> prev(n, -1);
-    int ans = 1;
-    int LIS_end = 0;
-    for(int i=0; i<n; ++i){
-        prev[i] = i;
-        for(int j=0; j<i; ++j){
-            if(arr[i] <= arr[j]) continue;
-            if(dp[i] < dp[j]+1){
-                dp[i] = dp[j]+1;
-                prev[i] = j;
-                if(ans < dp[i]){
-                    ans = dp[i];
-                    LIS_end = i;
-                }
+            for(int i=4; i<=n; i+=4){
+                st1.push_back(i);
+                st1.push_back(i+3);
+                st2.push_back(i+1);
+                st2.push_back(i+2);
             }
         }
+        else{
+            for(int i=1; i<=n/2; i+=2){
+                st1.push_back(i);
+                st1.push_back(n+1-i);
+                st2.push_back(i+1);
+                st2.push_back(n-i);
+            }
+        }
+        sort(all(st1));
+        sort(all(st2));
+        cout<<st1.size()<<endl<<st1;
+        br;
+        cout<<st2.size()<<endl<<st2;
+
+        /**
+         * @note Alternate Method
+         * int ans = sum / 2;
+         * for (int i = n; i >= 1; i--) {
+         *   if (i <= ans) {
+         *     st1.push_back(i);
+         *     ans -= i;
+         *   }
+         *   else { st2.push_back(i); }
+         */
     }
-    cout<<ans<<endl;
-    // cout<<LIS_end<<endl;
-    // cout<<dp;
-    
-    // // Print LIS
-    // vector<int> LIS;
-    // while(1){
-    //     LIS.pb(arr[LIS_end]);
-    //     if(LIS_end == prev[LIS_end]) break;
-    //     LIS_end = prev[LIS_end];
-    // }
-    // reverse(all(LIS));
-    // cout<<LIS;
 }
 
 /* ============ Main ============ */
 
-int main()
-{
+int main(){
+
     #ifndef ONLINE_JUDGE
        freopen("input.txt","r",stdin);
        freopen("output.txt","w",stdout);
